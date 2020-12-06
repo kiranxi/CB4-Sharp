@@ -12,9 +12,6 @@ namespace CB4_Pro
     public class ControlSystem : CrestronControlSystem
     {
         private Tsw1070 UI;
-        private Glpp1DimFlv2CnPm;
-
-
 
         /// <summary>
         /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
@@ -35,10 +32,14 @@ namespace CB4_Pro
             try
             {
                 Thread.MaxNumberOfUserThreads = 20;
+                ErrorLog.Error("CB4 Started");
 
-                UI= new Tsw1070(04, this);
+                UI= new Tsw1070(15, this);
                 UI.SigChange += new SigEventHandler(UI_Sigchange);
                 UI.Register();
+
+
+                
 
 
 
@@ -59,33 +60,21 @@ namespace CB4_Pro
 
         void UI_Sigchange(BasicTriList currentdevice, SigEventArgs args)
         {
+            LoadController Room1 = new LoadController();
             switch (args.Sig.Type)
                 {
                 case eSigType.Bool:    
                 {
                         if(args.Sig.BoolValue)
                         {
-                        
-                            if(args.Sig.Number == 1)
-                        {
-                            UI.BooleanInput[1].BoolValue = true;
-                        }
-                        
-                            if(args.Sig.Number == 2)
-                        {
-                            UI.BooleanInput[1].BoolValue = false;
-                        }
-
                         }
                           break;
                     }
                 case eSigType.UShort:
                     {
-                        if(args.Sig.Number == 1)
-                            {
-                            UI.UShortInput[1].UShortValue = UI.UShortOutput[1].UShortValue;
-                            UI.UShortInput[2].UShortValue = UI.UShortOutput[1].UShortValue;
-                        }
+                        UI.UShortInput[2].UShortValue = UI.UShortOutput[2].UShortValue;
+                        UI.UShortInput[3].UShortValue = UI.UShortOutput[2].UShortValue;
+
                         break;
 
                     }
@@ -95,9 +84,6 @@ namespace CB4_Pro
                     }
             
             }
-
-
-
         }
         /// <summary>
         /// InitializeSystem - this method gets called after the constructor 
