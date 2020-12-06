@@ -5,12 +5,14 @@ using Crestron.SimplSharpPro.CrestronThread;        	// For Threading
 using Crestron.SimplSharpPro.Diagnostics;		    	// For System Monitor Access
 using Crestron.SimplSharpPro.DeviceSupport;         	// For Generic Device Support
 using Crestron.SimplSharpPro.UI;
+using Crestron.SimplSharpPro.Lighting;
 
 namespace CB4_Pro
 {
     public class ControlSystem : CrestronControlSystem
     {
         private Tsw1070 UI;
+        private Glpp1DimFlv2CnPm;
 
 
 
