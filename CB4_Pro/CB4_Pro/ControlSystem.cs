@@ -10,7 +10,9 @@ namespace CB4_Pro
 {
     public class ControlSystem : CrestronControlSystem
     {
-        new Tsw1070 UI;
+        private Tsw1070 UI;
+
+
 
         /// <summary>
         /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
@@ -32,9 +34,10 @@ namespace CB4_Pro
             {
                 Thread.MaxNumberOfUserThreads = 20;
 
-                UI= new Tsw1070(A3,this);
-                UI.SigChange += new SigChangeEventHandler(UI_Sigchange);
+                UI= new Tsw1070(04, this);
+                UI.SigChange += new SigEventHandler(UI_Sigchange);
                 UI.Register();
+
 
 
                 //Subscribe to the controller events (System, Program, and Ethernet)
@@ -56,20 +59,22 @@ namespace CB4_Pro
         {
             switch (args.Sig.Type)
                 {
-                case eSigType.Bool
-                    {
+                case eSigType.Bool:    
+                {
                         if(args.Sig.BoolValue)
                         {
                         if(args.Sig.Number == 1)
+                        {
                             UI.BooleanInput[2].BoolValue = true;
-                            }
-                        break;
+                        }
+                        }
+                          break;
                     }
-                case eSigType.UShort
+                case eSigType.UShort:
                     {
                         break;
                     }
-                case eSigType.String
+                case eSigType.String:
                     {
                         break;
                     }
