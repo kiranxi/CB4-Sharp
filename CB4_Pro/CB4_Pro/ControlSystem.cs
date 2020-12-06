@@ -63,16 +63,29 @@ namespace CB4_Pro
                 {
                         if(args.Sig.BoolValue)
                         {
-                        if(args.Sig.Number == 1)
+                        
+                            if(args.Sig.Number == 1)
                         {
-                            UI.BooleanInput[2].BoolValue = true;
+                            UI.BooleanInput[1].BoolValue = true;
                         }
+                        
+                            if(args.Sig.Number == 2)
+                        {
+                            UI.BooleanInput[1].BoolValue = false;
+                        }
+
                         }
                           break;
                     }
                 case eSigType.UShort:
                     {
+                        if(args.Sig.Number == 1)
+                            {
+                            UI.UShortInput[1].UShortValue = UI.UShortOutput[1].UShortValue;
+                            UI.UShortInput[2].UShortValue = UI.UShortOutput[1].UShortValue;
+                        }
                         break;
+
                     }
                 case eSigType.String:
                     {

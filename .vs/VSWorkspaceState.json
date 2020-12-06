@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\CB4_Pro",
+    "\\CB4_Pro\\CB4_Pro"
   ],
+  "SelectedNode": "\\CB4_Pro\\CB4_Pro\\ControlSystem.cs",
   "PreviewInSolutionExplorer": false
 }
