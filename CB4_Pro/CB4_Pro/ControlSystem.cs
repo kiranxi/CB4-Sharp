@@ -10,6 +10,8 @@ namespace CB4_Pro
 {
     public class ControlSystem : CrestronControlSystem
     {
+        new Tsw1070 UI;
+
         /// <summary>
         /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
         /// Use the constructor to:
@@ -30,10 +32,19 @@ namespace CB4_Pro
             {
                 Thread.MaxNumberOfUserThreads = 20;
 
+                UI= new Tsw1070(A3,this);
+                UI.SigChange += new SigChangeEventHandler(UI_Sigchange);
+                UI.Register();
+
+
                 //Subscribe to the controller events (System, Program, and Ethernet)
                 CrestronEnvironment.SystemEventHandler += new SystemEventHandler(_ControllerSystemEventHandler);
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(_ControllerEthernetEventHandler);
+
+
+
+
             }
             catch (Exception e)
             {
@@ -41,6 +52,33 @@ namespace CB4_Pro
             }
         }
 
+        void UI_Sigchange(BasicTriList currentdevice, SigEventArgs args)
+        {
+            switch (args.Sig.Type)
+                {
+                case eSigType.Bool
+                    {
+                        if(args.Sig.BoolValue)
+                        {
+                        if(args.Sig.Number == 1)
+                            UI.BooleanInput[2].BoolValue = true;
+                            }
+                        break;
+                    }
+                case eSigType.UShort
+                    {
+                        break;
+                    }
+                case eSigType.String
+                    {
+                        break;
+                    }
+            
+            }
+
+
+
+        }
         /// <summary>
         /// InitializeSystem - this method gets called after the constructor 
         /// has finished. 
