@@ -8,20 +8,19 @@ namespace CB4_Pro
 {
     class LoadController
     {
-        public bool ON;
-        public bool OFF;
+
 		public ushort Level;
 
 		public LoadController()
 		{
 			
 		}
-		void LoadON()
+		public void LoadON()
         {
 			Level = 65535;
 
         }
-		void LoadOFF()
+		public void LoadOFF()
 		{
 			Level = 0;
 

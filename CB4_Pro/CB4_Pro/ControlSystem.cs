@@ -65,17 +65,24 @@ namespace CB4_Pro
                 {
                 case eSigType.Bool:    
                 {
-                        if(args.Sig.BoolValue)
+                        if(args.Sig.BoolValue) /// ON OFF using a Class
                         {
+                            if(args.Sig.Number == 1)
+                            {
+                                Room1.LoadON();
+                            }
+                            if (args.Sig.Number == 2)
+                            {
+                                Room1.LoadOFF();
+                            }
+                            UI.UShortInput[1].UShortValue = Room1.Level;
                         }
                           break;
                     }
                 case eSigType.UShort:
                     {
                         UI.UShortInput[2].UShortValue = UI.UShortOutput[2].UShortValue;
-                        UI.UShortInput[3].UShortValue = UI.UShortOutput[2].UShortValue;
-
-                        break;
+                         break;
 
                     }
                 case eSigType.String:
