@@ -75,9 +75,11 @@ namespace CB4_Pro
                             {
                                 Room1.LoadOFF();
                             }
-                            UI.UShortInput[1].UShortValue = Room1.Level;
+                            
                         }
-                          break;
+                        UI.UShortInput[1].UShortValue = Room1.Level;
+                        UI.UShortInput[2].UShortValue = Room1.Level;
+                        break;
                     }
                 case eSigType.UShort:
                     {
