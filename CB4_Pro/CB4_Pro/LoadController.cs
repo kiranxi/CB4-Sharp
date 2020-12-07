@@ -14,16 +14,17 @@ namespace CB4_Pro
 
 		public LoadController()
 		{
-			if (ON)
-			{
-				Level = 65535;
-				OFF = false;
-			}
-			if (OFF)
-			{
-				Level = 0;
-				ON = false;
-			}
+			
+		}
+		void LoadON()
+        {
+			Level = 65535;
+
+        }
+		void LoadOFF()
+		{
+			Level = 0;
+
 		}
 
 	}
