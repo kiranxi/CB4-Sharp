@@ -6,13 +6,22 @@ using Crestron.SimplSharpPro.Diagnostics;		    	// For System Monitor Access
 using Crestron.SimplSharpPro.DeviceSupport;         	// For Generic Device Support
 using Crestron.SimplSharpPro.UI;
 using Crestron.SimplSharpPro.Lighting;
+using Timer = System.Timers.Timer;
+using System.Timers;
+
+
 
 namespace CB4_Pro
 {
+    
+
+
     public class ControlSystem : CrestronControlSystem
     {
         private Tsw1070 UI;
-
+        LoadController Room1 = new LoadController();
+        public Timer loopTimer;
+        public int TempDevId;
         /// <summary>
         /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
         /// Use the constructor to:
@@ -29,25 +38,28 @@ namespace CB4_Pro
         public ControlSystem()
             : base()
         {
+            
             try
-            {
+            {   
+                loopTimer = new Timer();
+                loopTimer.Interval = 100;
+                loopTimer.Enabled = false;
+                loopTimer.Elapsed += LoopTimerEvent;
+                loopTimer.AutoReset = true;
+
+
+
                 Thread.MaxNumberOfUserThreads = 20;
                 ErrorLog.Error("CB4 Started");
 
-                UI= new Tsw1070(15, this);
-                UI.SigChange += new SigEventHandler(UI_Sigchange);
+                UI= new Tsw1070(06, this);
+                UI.SigChange += UI_SigChange;
                 UI.Register();
-
-
-                
-
-
 
                 //Subscribe to the controller events (System, Program, and Ethernet)
                 CrestronEnvironment.SystemEventHandler += new SystemEventHandler(_ControllerSystemEventHandler);
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(_ControllerEthernetEventHandler);
-
 
 
 
@@ -58,16 +70,26 @@ namespace CB4_Pro
             }
         }
 
-        void UI_Sigchange(BasicTriList currentdevice, SigEventArgs args)
+        private void LoopTimerEvent(Object source, ElapsedEventArgs e)
         {
-            LoadController Room1 = new LoadController();
+
+            if (TempDevId == 3)
+                Room1.Raise();
+            else if (TempDevId == 4)
+                Room1.Lower();
+
+            UI.UShortInput[1].UShortValue = Room1.Level;
+        }
+        private void UI_SigChange(BasicTriList currentDevice, SigEventArgs args)
+        {
+
             switch (args.Sig.Type)
-                {
-                case eSigType.Bool:    
-                {
-                        if(args.Sig.BoolValue) /// ON OFF using a Class
+            {
+                case eSigType.Bool:
+                    {
+                        if (args.Sig.BoolValue) /// ON OFF using a Class
                         {
-                            if(args.Sig.Number == 1)
+                            if (args.Sig.Number == 1)
                             {
                                 Room1.LoadON();
                             }
@@ -75,25 +97,50 @@ namespace CB4_Pro
                             {
                                 Room1.LoadOFF();
                             }
-                            
+                            if (args.Sig.Number == 3)
+                            {
+                                TempDevId = 3;
+                                loopTimer.Enabled = true;
+
+                            }
+                            if (args.Sig.Number == 4)
+                            {
+                                TempDevId = 4;
+                                loopTimer.Enabled = true;
+                            }
+
+
+
                         }
+                        else if (args.Sig.BoolValue == false)
+                        {
+                            loopTimer.Enabled = false;
+                        }
+
                         UI.UShortInput[1].UShortValue = Room1.Level;
-                        UI.UShortInput[2].UShortValue = Room1.Level;
+
                         break;
                     }
                 case eSigType.UShort:
                     {
-                        UI.UShortInput[2].UShortValue = UI.UShortOutput[2].UShortValue;
-                         break;
+                        UI.UShortInput[1].UShortValue = UI.UShortOutput[1].UShortValue;
+                        Room1.Level = UI.UShortOutput[1].UShortValue;
+                        break;
 
                     }
                 case eSigType.String:
                     {
                         break;
                     }
-            
+
             }
+
         }
+        
+
+
+
+      
         /// <summary>
         /// InitializeSystem - this method gets called after the constructor 
         /// has finished. 
@@ -184,6 +231,10 @@ namespace CB4_Pro
         /// <param name="systemEventType"></param>
         void _ControllerSystemEventHandler(eSystemEventType systemEventType)
         {
+
+           
+
+
             switch (systemEventType)
             {
                 case (eSystemEventType.DiskInserted):

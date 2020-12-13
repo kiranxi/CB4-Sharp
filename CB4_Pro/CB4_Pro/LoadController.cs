@@ -25,6 +25,23 @@ namespace CB4_Pro
 			Level = 0;
 
 		}
+		public void Raise()
+		{
+
+
+			if (Level < 65535 - 655)
+				Level = (ushort)(Level + 655);
+			else
+				Level = 65535;
+		}
+		public void Lower()
+		{
+			if (Level > 655)
+				Level = (ushort)(Level - 655);
+			else
+				Level = 0;
+
+		}
 
 	}
 }
